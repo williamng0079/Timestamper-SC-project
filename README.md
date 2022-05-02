@@ -24,7 +24,7 @@ test local environment setup
     import truffle-config.js to ganache gui
 
 
-test network setup
+test network setup (later)
 
 Reconfigure truffle-config.js to the Ropsten testnet
 
@@ -42,8 +42,8 @@ dependencies:
 
 done...
 
-1.  Base smart contract created 
-2.  deployed and tested on a local private ethereum network 
+1.  Timestamper smart contract created with the base functionality 
+2.  deployed and tested on a local private ethereum network (ganache)
 
 
 todo and ideas (avoid overscoping the project)...
