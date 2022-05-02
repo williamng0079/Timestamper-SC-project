@@ -1,1 +1,115 @@
-documentation:
+Detailed documentation of progress and procedures:
+
+Instructions contains step by step setup procedures for the testing environment.
+
+Environment:
+OS version: Ubuntu 20.04.4 LTS
+
+Set up Ethereum 
+    This allows easy management of distribution and independent software vendor software sources. 
+    (https://askubuntu.com/questions/1000118/what-is-software-properties-common)
+    - sudo apt install software-properties-common
+
+    This adds the ethereum repository 
+    - sudo add-apt-repository -y ppa:ethereum/ethereum
+
+    Check for ethereum repository updates
+    - sudo apt update
+
+    Install ethereum (Geth)
+    - sudo apt install ethereum
+
+Ganache GUI (an in memory ethereum node that provides an user friendly gui, 
+    This is for locally testing the smart contracts before deployment onto the main chain)
+    Download link (https://trufflesuite.com/ganache/) 
+
+    Change permission within properties of the downloaded package to ensure that ganache can be excuted as a program
+
+
+MetaMask
+
+    Create a Metamask account and setup a wallet address. 
+    Such wallet address will be linked to the Ropsten ethereum testnet and test ether will be obtained from https://faucet.dimensions.network/.
+    This is setup for later deployment tests.
+
+Node.Js and npm package manager (server side JavaScript platform that allows the creation of applications to interact with the ethereum nodes)
+
+    we will use curl to install the node.js package manager 
+    To install curl if not installed previously, use: 
+        - sudo apt install curl
+
+    For the most recent version of the node.js installation curl command, go to https://nodejs.org/en/download/.
+    Below are the commands used to install node.js v18 and npm 8.8.0 (Lastest at the time)
+        - curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - 
+        - sudo apt-get install -y nodejs
+        - sudo apt install -y build-essential (useful to install certain npm packages)
+
+
+Install trufflesuite (A development framework for ethereum smart contracts with solidity compiler)
+    version used at the time of this project: Truffle v5.5.12
+    - sudo npm install -g truffle
+
+
+Initiate the truffle project 
+    In an empty directory run:
+    - truffle init 
+
+
+.......Coding Timestamper smart contracts.......
+For details please see comments within "Timestamper.sol"
+
+Dependency modules required for the smart contract (modules are marked in .gitignore as number of files are too large):
+
+    openzepplelin/contracts (Ownable.sol):
+    - npm i @openzepplelin/contracts
+
+    openzeppelin, upgradeable contract plugin:
+    - npm install --save-dev @openzeppelin/truffle-upgrades
+
+
+    hardhat (Console.sol):    
+    - npm install --save-dev hardhat
+
+
+Deploy and test the smart contract:
+
+    Linking truffle project to ganache for local test deployments
+
+    Within truffle-config.js, configure the following setting under the "development" nest underneath "networks":
+
+        development: {
+            host: "127.0.0.1",     // Localhost
+            port: 7545,            // Standard Ethereum port (port numebr 7545 is ganache)
+            network_id: "*",       // Any network 
+        }
+    
+    Import truffle porject to ganache:
+        Select new ethereum project in the main menu and supply the path to the truffle-config.js file.
+    
+    Create deployment/migration script for the smart contract
+        For detail please see JavaScript files within the directory migrations, note that the number prefix to the filenames are mandatory 
+        for the order of contract deployments.
+
+
+    Compile and deploy smart contracts:
+
+        Within the directory of the truffle project run the following commands:
+        - truffle compile //this will compile all the smart contracts withint the "contracts" directory
+        - truffle deploy --network deployment //this will deploy the compiled contracts to the ethereum node, network can be specified
+
+        To confirm the deployment, navigate to the contracts section within ganache to check the status of the SCs.
+    
+    Interact with the deployed SCs and perform transactions with truffle console:
+
+        Within the project directory, initiate truffle development console with:
+
+        - truffle console
+
+        Use the following scripts within the console to specify the contract to be interacted with: 
+
+        - const hashinput = await Timestamper.deployed(); //define the contract
+        - await hashinput.timestamp("\\enter the hash string here//")   // note that "await" is called before the promise, this is to ensure such JavaScript code runs in a synchronous fashion.
+                                                                        (https://medium.com/coinmonks/testing-solidity-with-truffle-and-async-await-396e81c54f93)
+
+        Next, navigate to the transaction section within the ganache gui to see the successful transaction made,
+        within the transaction page, note specifically the inputs field under "contracts" and blocktime under "events".
