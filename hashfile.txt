@@ -1,0 +1,1 @@
+This is a file used to generate hash values to be used for the timestamper smart contract development.
