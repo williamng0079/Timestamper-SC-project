@@ -113,3 +113,17 @@ Deploy and test the smart contract:
 
         Next, navigate to the transaction section within the ganache gui to see the successful transaction made,
         within the transaction page, note specifically the inputs field under "contracts" and blocktime under "events".
+
+Upgrading deployed smart contracts:
+
+    By default, smart contracts are not upgradeable once it is deployed on to the blockchain, such properties enforces the immutability idea, as the underlying logic of the smart contract cannot be modified.
+    however, @openzepplin provided proxy pattern in attempt to make the deployed contracts "upgradeable" by swapping the logic contract (Source: https://santexgroup.com/blog/is-it-possible-to-upgrade-a-smart-contract-once-deployed/)
+    allow upgradeability can be useful for reasons such as implementing new features or bug fixes.
+    An attempt was made to implement such upgradeability, but the module "Ownable.sol" utilised is not upgrade safe, 
+    additionally, @openzeppelin warned that
+    "Violating storage layout restrictions will cause the upgraded version of the contract to have its storage values mixed up, 
+    and can lead to critical errors in your application."
+
+    Therefore, the implementation for such feature is pushed to future work unless time allows. 
+
+ 
