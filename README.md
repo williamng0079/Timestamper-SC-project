@@ -66,7 +66,7 @@ prepare test scenarios
 1.  a normal scenario
 2.  MD5 hash collision
 3.  test scripts for submitting a large number of hash in a short period
-4.  test net example Rinkeby (POA)/ Ropsten (PoW) eth network 
+4.  testnet deployment Rinkeby (POA)/ Ropsten (PoW) eth network 
 5.  
 
 
