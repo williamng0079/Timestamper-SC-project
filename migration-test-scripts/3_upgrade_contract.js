@@ -1,3 +1,5 @@
+// example script (Source: https://docs.openzeppelin.com/learn/upgrading-smart-contracts)
+
 const { upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
 const Box = artifacts.require('Box');
