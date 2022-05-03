@@ -126,4 +126,42 @@ Upgrading deployed smart contracts:
 
     Therefore, the implementation for such feature is pushed to future work unless time allows. 
 
- 
+
+Interacting with the smart contract with web3.js instead of truffle console:
+    
+    this allows interactions to be prefined instead of invoking the truffle console and create contract instance each time.
+
+
+
+Input sanitisation:
+    ensure that the iput validation is not computed by the smart contract to reduce cost.
+
+Gas usage evaluation:
+    comparison between calldata and memory (data storage methods in solidity smart contract)
+    Gas used to store a example hash string: 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
+    calldata: 88870
+    memory: 89380
+    calldata(unecessary codes removed):25247
+    difference between calldata and memory variable storage method:
+
+
+    improve the the gas usage efficiency (reduce cost):
+        the emitted event for this smart contract still has to log the hash input into the transaction.
+        utilising uint256 to store the hex input can reduce gas but int converted value will be written into the transaction log instead of the hex value.
+        therefore storing input as string with calldata is used.
+        unecessary varaiable declaration and function call are removed (i.e., console.log()) to reduce gas.
+
+
+
+sources for Test data generation:
+
+    gas usage evaluation
+        compare calldata and memory storage option after the code optimisation.
+        single input
+        batch timestamp (make a graph about how each additional element in the array increases the gas usage)
+    
+    accuracy of timestamp according to blocktime (test on both ganache and ropsten)
+        test script that demonstrate that continuous contract call in a duration of 13s may have a unified blocktime.
+    
+    evaluate usage of MD5 (fabricate a collision)
+        demonstrate that a fabricated collision can have issues.

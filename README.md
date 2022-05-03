@@ -76,3 +76,7 @@ limitaitons (in a realistic deployment):
     (ethereum has block interval of ~13s, therefore the hash input with the transaction timestamped by blocktime may experience up to 13 second delay)
     (needs to fact check, what if the latest block published does not include the transaction?)
 3.  
+
+future work:
+
+1.  Opimise the smart contract further to reduce gas usage,storing data within the smart contract's memory can be an expensive operation 
