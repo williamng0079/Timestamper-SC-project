@@ -9,7 +9,8 @@ pragma solidity >=0.4.22 <0.9.0;            //This line specifies a range of sol
 import "@openzeppelin/contracts/access/Ownable.sol";    //Ownable module allows ownership of this contract, only the specified owner can call the timestamp functions
 //import "@openzeppelin/upgrades-core/contracts/Initializable.sol";   //For contract upgradeability
 
-contract Timestamper is Ownable             
+//Only the address of the deployer can call functions tagged with onlyOwner within this smart contract.
+contract Timestamper is Ownable                                     
 {
     //uint256 private _hash;                                        //Declare a private string variable _hash used to store the user input hash.
                                                                     //Private variable means that other accessing and modifying the information by other contracts are prevented. (Source: https://docs.soliditylang.org/en/v0.4.24/contracts.html)
@@ -19,7 +20,7 @@ contract Timestamper is Ownable
     //Memory and calldata define the data area where a variable is stored. 
     //It is used to temporarily store variables and their values (Source:https://ethereum.stackexchange.com/questions/74442/when-should-i-use-calldata-and-when-should-i-use-memory)
     //calldata choosen due to lower gas usage.
-    function timestamp(string calldata hash) public onlyOwner         
+    function timestamp(string calldata hash) public onlyOwner       
     {
         //_hash = hash;                                             //Commented out for gas efficiency
 
@@ -28,8 +29,6 @@ contract Timestamper is Ownable
         emit Timestamp(hash);                                       //This allows the argument (supplied hash input) event indexed to be logged in the transaction's input field
     }
     
-
-
     //The below function allows a call (zero gas usage) to display the most recent value stored in _hash 
     //function retrieve() public view returns (string calldata)         
     //{
