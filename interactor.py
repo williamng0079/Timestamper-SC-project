@@ -38,8 +38,8 @@ def interact(hash, batch = False):                                     #takes a 
     
     return tx_receipt
 
-## todo... add interaction for batch timestamp function and input validation/ mode selection(single hash/batch hash).
-## target input: can only be 32 digits or 64 digits (either md5 or sha256)
+
+## target input: can only be 32 digits or 64 digits (either md5 or sha256) note maybe discard the option for MD5
 ##        contains only alphanumeric other than other than 0-9, and a-f (alphanumeric)
 def validate(s):
     
