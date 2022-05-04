@@ -1,6 +1,16 @@
 Detailed documentation of progress and procedures:
 
+
+topics to add to the literature review:
+
+
+- Ethereum block interval
+- gas usage, gas limit, and gas price (and the calculation equation)
+-
+
+
 Instructions contains step by step setup procedures for the testing environment.
+
 
 Environment:
 OS version: Ubuntu 20.04.4 LTS
@@ -65,10 +75,20 @@ Install web3 package and dotenv packages for python
 .......Coding Timestamper smart contracts.......
     For details please see comments within "Timestamper.sol"
     The choice of implementing the ownable access control ensures that when deployed to the testnet, 
-    it can only be called by the deployer address as this project is a private development to provide a solution to the dissertation.
+    it can only be called by the deployer address. This is to ensure that the smart contract is only interacted through the interactor script.
     utilising indexed event and emit log to store the input value (hash) supplied by the user onto the ethereum blockchain.
     note: ethereum will hash the value being emitted by the event log with keccak 256, therefore, 
     refering to the past transaction of hash submitted will require an additional step (hashing the submiited hash with keccak 256)
+
+    Two types of timestamping functions are implemented for the smart contract to be deployed.
+    thery are :
+        - timestamp: this is the basic function used to perform timestamping of user input with blocktime via solidity emit event logs,
+                        the string supplied by the user will be stored within an event indexed variable call hash, as the input value is being indexed, 
+                        it's keccak 256 value will show up on the log section of the transaction.
+        - batchTimestamp: same logic as above but able to be supplied with multiple inputs as an array for them to be timestamped at the same time.
+
+
+
 
 Dependency modules required for the smart contract (modules are marked in .gitignore as number of files are too large):
 
@@ -146,17 +166,51 @@ Upgrading deployed smart contracts:
     Therefore, the implementation for such feature is pushed to future work unless time allows. 
 
 
-Calling functions (interacting) within the deployed smart contract with python:
+Interacting with the deployed smart contract from python script interactor.py:
+    for detail of implementation (i.e., web3), please see interactor.py and comments within.
+    this allows interactions with the smart contract from a script instead of invoking the truffle console and create contract instance each time.
+    additional computation can be done here rather than inside the contract code to ensure gas usage efficiency.
+    the interact function will be able to perform transaction with the smart contract with the user input supplied, 
+    transact() will return a transaction hash, supplying this value into wait_for_transaction_receipt() function, 
+    it will wait for the block confirmation of such transaction and then return a dict containing the transaction receipt with the following information:
+        
+        blockHash: String, 32 Bytes - hash of the block where this transaction was in.
+        blockNumber: Number - block number where this transaction was in.
+        transactionHash: String, 32 Bytes - hash of the transaction.
+        transactionIndex: Number - integer of the transactions index position in the block.
+        from: String, 20 Bytes - address of the sender.
+        to: String, 20 Bytes - address of the receiver. null when its a contract creation transaction.
+        cumulativeGasUsed: Number - The total amount of gas used when this transaction was executed in the block.
+        gasUsed: Number - The amount of gas used by this specific transaction alone.
+        status: String - '0x0' indicates transaction failure , '0x1' indicates transaction succeeded.
+        contractAddress: String - 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null.
+        logs: Array - Array of log objects, which this transaction generated.
+
+        (Source: https://ethereum.stackexchange.com/questions/16525/what-are-ethereum-transaction-receipts-and-what-are-they-used-for)
+
+    these informtaion will be useful in many ways:
+        - transaction hash can be used to search for this specific transaction
+        - gasUsed will be used later to generate test data for the increase of gas unit per 1 additional array element in the input. (can be used to determine the size limit for the array per single batch timestamp)
     
-    This allows interactions to be prefined instead of invoking the truffle console and create contract instance each time.
-    additional computation can be done here rather than inside contract codes to ensure gas efficiency.
-    for detail of implementation, please see contract_interactor.py and comments within.
+    addititonally, the elapse time between the time of transaction submission and the time of the receipt received can be used to calculate the time delay.
+
+
+Terminal interaction and input validation:
+    for implementation detail, please see functions within interactor.py
+    the input validation function: validate() will perform the following check to the supplied argument and only return true if all conditions are satisfied:
+        - less than 65 digits (sha256 has 64) 
+        - only contains alphanumeric values 
+        - only contains hexademical digits.
+
+    single_input and batch_input functions will allow user to supply hash input through terminal and the validate funtion will be called to check input.
+    process_single and process_batch will take the return value from the input functions and call the interact function to perform transactions with the smart contract in order to log the user input.
 
 
 
-Input sanitisation:
-    ensure that the iput validation is not computed by the smart contract to reduce cost.
-
+    ###### next ######
+    implement mode selection.
+    make test scripts to generate test data and plots
+    
 
 
 
@@ -183,7 +237,9 @@ Test data generation:
     gas usage evaluation
         compare calldata and memory storage option after the code optimisation.
         single input
-        batch timestamp (make a graph about how each additional element in the array increases the gas usage)
+        batch timestamp 
+        create a script that submits batchtimestamp automatically and each iteration increases the array element by 1 up until 100 (or more)
+        (plot a graph about how each additional element in the array increases the gas usage)
     
     accuracy of timestamp according to blocktime (test on both ganache and ropsten)
         test script that demonstrate that continuous contract call in a duration of 13s or more (due to ethereum forks) may have a unified blocktime.
@@ -195,9 +251,8 @@ Test data generation:
         "You can use the web3.eth.getTransactionReceipt method to get a receipt for a transaction, 
         or wait for an event generated by a smart contract when your transaction is being executed.
         However, you should take into mind that public Ethereum may have forks and you should wait 5-6 blocks 
-        to make sure that the transaction will not be dropped along with the "side" fork." (Source: https://stackoverflow.com/questions/65328339/how-to-check-if-ethereum-transaction-has-been-mined)
+        to make sure that the transaction will not be dropped along with the "side" fork."
+        (Source: https://stackoverflow.com/questions/65328339/how-to-check-if-ethereum-transaction-has-been-mined)
 
 
 
-    evaluate usage of MD5 (fabricate a collision)
-        demonstrate that a fabricated collision can have issues.
