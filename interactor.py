@@ -27,11 +27,15 @@ def connection_status():
     print(web3_connection.isConnected())                 #connection check, if successfully connected to the node, it will return true
 
     
-def interact(hash):                                     #takes a single user input (hash) as argument to be logged into the solidity event log
+def interact(hash, batch = False):                                     #takes a single user input (hash) as argument to be logged into the solidity event log
     contract = web3_connection.eth.contract(address=contract_address, abi=Timestamper_abi)  #initiating an object for the deployed contract. 
-    input_tx_hash = contract.functions.timestamp(hash).transact()      #this will perform a transaction in order the modify the state of the deployed smart contract
-                                                                        #.transact() will returns the transaction hash.
-    tx_receipt = web3_connection.eth.wait_for_transaction_receipt(input_tx_hash)    #as name suggests, wait_for_transaction_receipt will ensure that the transaction has been included within a block (Source: https://web3py.readthedocs.io/en/stable/web3.eth.html#web3.eth.Eth.wait_for_transaction_receipt)
+    if (batch == True):
+        input_tx_hash = contract.functions.batchTimestamp(hash).transact()              #.transact() will returns the transaction hash.
+        tx_receipt = web3_connection.eth.wait_for_transaction_receipt(input_tx_hash)    #as name suggests, wait_for_transaction_receipt will ensure that the transaction has been included within a block (Source: https://web3py.readthedocs.io/en/stable/web3.eth.html#web3.eth.Eth.wait_for_transaction_receipt)
+    else:
+        input_tx_hash = contract.functions.timestamp(hash).transact()      #this will perform a transaction in order the modify the state of the deployed smart contract
+        tx_receipt = web3_connection.eth.wait_for_transaction_receipt(input_tx_hash)                                                               
+    
     return tx_receipt
 
 ## todo... add interaction for batch timestamp function and input validation/ mode selection(single hash/batch hash).
@@ -48,28 +52,59 @@ def validate(s):
 
 def single_input():
     userInput = input("Please supply a hash, or enter quit to terminate:")
-    if userInput == "quit":
-        sys.exit()
-    elif validate(userInput) == True:
-        print("The entered value will be recorded onto the blockchain!!!")
-
-    else: 
+    if userInput == "quit": 
+        userInput = 0
+        print("Nothing has been submitted to the smart contract")        
+    elif validate(userInput) == False:
         print("Sorry, the input cannot be processed, please enter a correct hash")
+        userInput = 0         
+    else: 
+        print("The entered value: "+userInput+" will be recorded onto the blockchain!!!")
+    
+    return userInput
 
 #logic: ask user to supply 1 element each time, store into a string array, ignore any input that fails validation and store the next one.
 
 def batch_input():
     hash_array = []
     while True:
-        userInput = input("Please supply a hash, or enter quit to terminate:")
+        userInput = input("Please supply a hash, enter done to finish the submission, enter quit to discard submission:")
         if userInput == "quit":
+            hash_array = 0
+            print("user quits the submission")
+            break
+        elif userInput == "done":
+            if hash_array == []:
+                print("yessir, nothing is entered to the array")
+            else:
+                print("user submitted the following:")
+                print(hash_array)
             break
         elif validate(userInput) == False:
-            print("Sorry, the input cannot be processed, please enter a correct hash")
+            print("Sorry, the input cannot be processed, please restart and enter a correct hash")
         else:
             hash_array.append(userInput)
-
     return hash_array 
 
-    
-    
+
+def process_single():
+    outcome = single_input()    
+    if outcome == 0:
+        sys.exit()
+    else:    
+        transact = interact(outcome)
+        print(transact)
+
+
+def process_batch():
+    outcome = batch_input()
+    if outcome == []:
+        sys.exit()
+    elif outcome == 0:
+        sys.exit()
+    else:
+        transact = interact(outcome, True)
+        print(transact)
+
+#process_single()
+#process_batch()
