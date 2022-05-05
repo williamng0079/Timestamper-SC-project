@@ -64,19 +64,9 @@ front end stuff
 prepare test scenarios
 
 1.  a normal scenario
-2.  MD5 hash collision
-3.  test scripts for submitting a large number of hash in a short period
-4.  testnet deployment Rinkeby (POA)/ Ropsten (PoW) eth network 
+2.  test scripts for submitting a large number of hash in a short period
+3.  testnet deployment Rinkeby (POA)/ Ropsten (PoW) eth network 
+4.  
 5.  
 
 
-limitaitons (in a realistic deployment):
-1.  Etherscan reliant (verify the transaction input field in the smart contract)
-2.  timestamping range (an 100% acurrate timestamp is unlikely as transactions are not timestamped, only the block time 
-    (ethereum has block interval of ~13s, therefore the hash input with the transaction timestamped by blocktime may experience up to 13 second delay)
-    (needs to fact check, what if the latest block published does not include the transaction?)
-3.  
-
-future work:
-
-1.  Opimise the smart contract further to reduce gas usage,storing data within the smart contract's memory can be an expensive operation 

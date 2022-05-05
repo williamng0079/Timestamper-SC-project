@@ -4,7 +4,7 @@ Detailed documentation of progress and procedures:
 topics to add to the literature review:
 
 
-- Ethereum block interval
+- Ethereum block interval (blockchian epoch time)
 - gas usage, gas limit, and gas price (and the calculation equation)
 -
 
@@ -71,6 +71,7 @@ Install web3 package and dotenv packages for python
     
     - pip3 install web3
     - pip3 install python-dotenv
+    - pip install pyfiglet (for the cli welcome screen)
 
 .......Coding Timestamper smart contracts.......
     For details please see comments within "Timestamper.sol"
@@ -256,3 +257,13 @@ Test data generation:
 
 
 
+limitaitons (in a realistic deployment):
+1.  Etherscan reliant (verify the transaction input field in the smart contract)
+2.  timestamping range (an 100% acurrate timestamp is unlikely as transactions are not timestamped, only the block time 
+    (ethereum has block interval of ~13s, therefore the hash input with the transaction timestamped by blocktime may experience up to 13 second delay)
+    (needs to fact check, what if the latest block published does not include the transaction?)
+3.  gas price based on blockchain demand
+
+future work:
+
+1.  Opimise the smart contract further to reduce gas usage,storing data within the smart contract with memory or callcan be an expensive operation 
