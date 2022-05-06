@@ -168,6 +168,7 @@ Upgrading deployed smart contracts:
 
 
 Interacting with the deployed smart contract from python script interactor.py:
+    
     for detail of implementation (i.e., web3), please see interactor.py and comments within.
     this allows interactions with the smart contract from a script instead of invoking the truffle console and create contract instance each time.
     additional computation can be done here rather than inside the contract code to ensure gas usage efficiency.
@@ -195,22 +196,56 @@ Interacting with the deployed smart contract from python script interactor.py:
     
     addititonally, the elapse time between the time of transaction submission and the time of the receipt received can be used to calculate the time delay.
 
+    crucial information from the transaction receipt is concatenated to the user on every successful input submission:
+        - time of transaction confirmed
+        - transaction hash
+        - user input
+        - transaction status
+        - gas used
 
-Terminal interaction and input validation:
+    additionally, uncomment print(transact) will allow the display of full raw transaction receipt.
+
+CLI(Command Line Interface), input validation, local log file:
     for implementation detail, please see functions within interactor.py
+    
+    The cli will first check for the connection to the nodes,
+    it will return error messages and reasons if the connections fails and then terminates the program.
+    
     the input validation function: validate() will perform the following check to the supplied argument and only return true if all conditions are satisfied:
         - less than 65 digits (sha256 has 64) 
         - only contains alphanumeric values 
         - only contains hexademical digits.
+        - the CLI will prompt the user to drop the hex prefix (0x) as it will fail the hexdigit check
 
     single_input and batch_input functions will allow user to supply hash input through terminal and the validate funtion will be called to check input.
     process_single and process_batch will take the return value from the input functions and call the interact function to perform transactions with the smart contract in order to log the user input.
 
+    The CLI is traverable (i.e., 1 main welcome menu and two sub menus: single mode and batch mode)
+    basic input sanitisation implemented.
+    user can terminate the program in main menu with exit.
+    the user is able to return to the main menu and cancel hash submission with quit.
+    reasonable screen clears are positioned to ensure that the interface remains tidy.
+
+    Additionally, the reconstruct_receipt() function is implemented to take the comfirmed block receipt and access its attributes 
+    and extract useful informaiton are logged into a local log file, the log file will be updated each time a transaction receipt is received.
+    the following are included:
+        'Time_of_Transaction_Confirmed': 
+        'User_Input': 
+        'Transaction_Hash': 
+        'Block_Hash': 
+        'Block_Number':
+        'From': 
+        'To': 
+        'Gas_Used': 
+        'Cumulative_Gas_Used':
+        'Status'
+     
 
 
-    ###### next ######
-    implement mode selection.
-    make test scripts to generate test data and plots
+###### next ######
+
+network selection in cli
+make test scripts to generate test data and plots
     
 
 

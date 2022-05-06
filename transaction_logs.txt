@@ -30,3 +30,16 @@
 
 
 
+{'Time_of_Transaction_Confirmed': '2022-05-06 01:19:53.711304',
+ 'User_Input': '123141313',
+ 'Transaction_Hash': '6ad1c2bf51254bbff63552d57ca1a5c5862844b945022cde68d54c2a54b7d9ee',
+ 'Block_Hash': 'c30baa140d52e49b87d2d1c80da3f6e05de12c23aad571042b283660d2e9a93c',
+ 'Block_Number': 72,
+ 'From': '0x4606b8ed14d00aFa8CE8350d75c6954eaa7aF73E',
+ 'To': '0x007D1B77958B945aEcd9828B9f749DB5e2f285AD',
+ 'Gas_Used': 24447,
+ 'Cumulative_Gas_Used': 24447,
+ 'Status': 1}
+
+
+

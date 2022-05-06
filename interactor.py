@@ -15,7 +15,7 @@ import string
 import time
 import getpass
 from binascii import hexlify                #(Source: https://www.delftstack.com/howto/python/python-convert-byte-to-hex/)
-import pyfiglet
+import pyfiglet                             #(Source: https://pypi.org/project/pyfiglet/0.7/)
 from datetime import datetime               #(Source: https://www.programiz.com/python-programming/datetime/current-datetime)
 import pprint as pp                         #(Source: https://docs.python.org/3/library/pprint.html#pprint.pprint)
 
@@ -54,7 +54,7 @@ def write_to_file(receipt):
         logfile.write("\n\n\n")
     
 
-## target input: can only be 32 digits or 64 digits (either md5 or sha256) note maybe discard the option for MD5
+## target input: can only be less than 65 digits
 ##        contains only alphanumeric other than other than 0-9, and a-f (alphanumeric) (Source: https://careerkarma.com/blog/python-isalpha-isnumeric-isalnum/)
 ##        check if 0x prefix exist, fail if it does as hexdigits check will fail, because "x"
 def validate(s):
@@ -222,7 +222,6 @@ def terminal():
                 break
             else:
                 print("\nInvalid input "+userIn+"\n")
-
-             
+          
 terminal()
 #welcome()
