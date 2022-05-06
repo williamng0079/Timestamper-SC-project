@@ -5,6 +5,7 @@
 #This program will read the .env file in the home directory in order to retrieve required values for the smart contract interaction.
 ####### Ensure that the .env are updated with the correct contract information before each interaction #######
 import re
+from socket import SO_DONTROUTE
 import sys
 import os
 import json
@@ -49,7 +50,7 @@ def interact(hash, batch = False):                                     #takes a 
 
 def write_to_file(receipt):
     with open("transaction_logs.txt", "a") as logfile:
-        pp.pprint(receipt, logfile)                                 #(Source: https://docs.python.org/3/library/pprint.html#pprint.pprint)
+        pp.pprint(receipt, logfile, sort_dicts=False)                                 #(Source: https://docs.python.org/3/library/pprint.html#pprint.pprint)
         logfile.write("\n\n\n")
     
 
@@ -138,7 +139,7 @@ def process_single():
         receipt_dict = reconstruct_receipt(transact, time_get, outcome, owner_account)
         #print("Full transaction receipt:\n". transact)         #to see unfiltered and complete block transaction receipt, uncomment this line
         print("Transaction receipt:")
-        pp.pprint(receipt_dict)
+        pp.pprint(receipt_dict, sort_dicts=False)
         print("\n\n\n--- IMPORTANT INFORMATION ---")
         print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH TO CHECK THE DETAIL OF THE SUBMITTED HASH IN THE FUTURE")
         print("\n\nTime of transaction confirmed:", time_get)
@@ -164,7 +165,7 @@ def process_batch():
         receipt_dict = reconstruct_receipt(transact, time_get, outcome, owner_account)
         #print("Full transaction receipt:\n". transact)         #to see unfiltered and complete block transaction receipt, uncomment this line
         print("Transaction receipt:")
-        pp.pprint(receipt_dict)
+        pp.pprint(receipt_dict, sort_dicts=False)
         print("\n\n\n--- IMPORTANT INFORMATION ---")
         print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH TO CHECK THE DETAIL OF THE SUBMITTED HASH IN THE FUTURE")
         print("\n\nTime of transaction confirmed:", time_get)
