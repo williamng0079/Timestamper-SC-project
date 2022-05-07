@@ -4,12 +4,11 @@
 #Majority of the computation (input validation, cli, extracting transaction receipt attributes etc...)will be done here to reduce the computation done by the solidity smart contract to reduce gas usage which lowers cost (gas fee)
 #This program will read the .env file in the home directory in order to retrieve required values for the smart contract interaction.
 ####### Ensure that the .env are updated with the correct contract information before each interaction #######
-import re
-from socket import SO_DONTROUTE
 import sys
 import os
 import json
 from dotenv import load_dotenv
+from eth_utils import keccak
 from web3 import Web3                       #(Source: https://web3py.readthedocs.io/en/stable/)
 import string
 import time
@@ -26,11 +25,9 @@ node_provider = os.environ['LOCAL_NODE_PROVIDER']
 Timestamper_abi = json.loads(os.environ['CONTRACT_ABI']) #and abi is the contract application binary interface used for smart contract interaction, it is encoded in the json format (Source: https://docs.soliditylang.org/en/v0.8.13/abi-spec.html)
 contract_address = os.environ['SMART_CONTRACT_ADDRESS']
 owner_account = os.environ['OWNER_ADDRESS']
-
-web3_connection = Web3(Web3.HTTPProvider(node_provider)) #connecting to the ethereum node 
+web3_connection = Web3(Web3.HTTPProvider(node_provider)) #default connection: connecting to the ethereum node 
 web3_connection.eth.default_account = owner_account      #identifing the account address to be used to send transactions
                                                          #note that the default account must be the account that deployed the smart contract due to the access control implement with Ownable
-
 
 def connection_status():
     #print(web3_connection.isConnected())                 #connection check, if successfully connected to the node, it will return true
@@ -85,30 +82,46 @@ def single_input():
 #logic: ask user to supply 1 element each time, store into a string array, ignore any input that fails validation and store the next one.
 
 def batch_input():
-    hash_array = []
+    hash_list = []
     print("\n\n---Please supply a hash (without the '0x' prefix)---\nEnter done to finish the submission\nEnter quit to discard submission\n\n")
     while True:
         userInput = input("Enter your value >>")
         if userInput == "quit":
-            hash_array = 0
+            hash_list = 0
             print("\nuser quits the submission\n")
-            time.sleep(3)
+            time.sleep(2)
             break
         elif userInput == "done":
-            if hash_array == []:
+            if hash_list == []:
                 print("\nnothing is entered to the array\n")
-                time.sleep(3)
+                time.sleep(2)
             else:
                 print("\nuser submitted the following values:\n")
-                print(hash_array)
+                print(hash_list)
                 print("\n\n")
             break
         elif validate(userInput) == False:
             print("\nSorry, the input cannot be processed, please enter a correct hash\n")
             
         else:
-            hash_array.append(userInput)
-    return hash_array 
+            hash_list.append(userInput)
+    return hash_list 
+
+
+def Convert_to_keccak(value, list=False):
+    
+    
+    if list == True:
+        keccak_list = []
+        for i in value:
+            keccak_b = Web3.keccak(text=i)
+            readable = hexlify(keccak_b).decode("utf-8")
+            keccak_list.append(readable)
+        return keccak_list
+    else:
+        keccak_b = Web3.keccak(text=value)
+        readable = hexlify(keccak_b).decode("utf-8")
+        return readable
 
 
 ## logic: take the block receipt AttributeDict as argument and filters out the useful information to be displayed or used for tests
@@ -126,9 +139,25 @@ def reconstruct_receipt(tx_receipt, time, userInput, sender):
     receipt["Gas_Used"] = tx_receipt.gasUsed
     receipt["Cumulative_Gas_Used"] = tx_receipt.cumulativeGasUsed
     receipt["Status"] = tx_receipt.status
-    
     return receipt
     
+def transaction_message(_receipt, _time, _input, _transact, _kVal):
+    print("Transaction receipt:")
+    pp.pprint(_receipt, sort_dicts=False)
+    print("\n\n\n---!!! IMPORTANT INFORMATION !!!---")
+    print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH AND THE KECCAK256 VALUES OF YOUR SUBMISSIONS FOR FUTURE REFERENCE OF THE TIMESTAMPS")
+    print("\nWITHOUT THE TRANSACTION HASH, YOU WILL NOT BE ABLE TO FIND THE TIMESTAMP IN THE FUTURE")
+    print("\nTHE KECCAK256 VALUES ARE YOUR SUBMISSIONS HASHED AGAIN BY SOLIDITY KECCAK AND IT WILL BE SHOWN ON THE LOG PAGE OF YOUR NODE PROVIDER")
+    print("\n\nTime of transaction confirmed:", _time)
+    print("\nYou have submitted\n")
+    pp.pprint(_input)
+    print("\nKeccak256 values of your submission (in order):\n")
+    pp.pprint(_kVal)
+    print("\n\nTransaction status:", _transact.status)
+    print("\nTransaction hash:",hexlify(_transact.transactionHash).decode("utf-8"))
+    print("\nGas Used:", _transact.gasUsed)
+
+
 def process_single():
     outcome = single_input()    
     if outcome == 0:
@@ -138,16 +167,8 @@ def process_single():
         time_get = datetime.now()
         receipt_dict = reconstruct_receipt(transact, time_get, outcome, owner_account)
         #print("Full transaction receipt:\n". transact)         #to see unfiltered and complete block transaction receipt, uncomment this line
-        print("Transaction receipt:")
-        pp.pprint(receipt_dict, sort_dicts=False)
-        print("\n\n\n--- IMPORTANT INFORMATION ---")
-        print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH TO CHECK THE DETAIL OF THE SUBMITTED HASH IN THE FUTURE")
-        print("\n\nTime of transaction confirmed:", time_get)
-        print("\nYou have submitted:", outcome)
-        print("\nTransaction status:", transact.status)
-        print("\nTransaction hash:",hexlify(transact.transactionHash).decode("utf-8"))
-        print("\nGas Used:", transact.gasUsed)
-        
+        keccak_value = Convert_to_keccak(outcome)
+        transaction_message(receipt_dict, time_get, outcome, transact, keccak_value)
         getpass.getpass("\n\n\nPress Enter to continue...")
         write_to_file(receipt_dict)
         status = 1
@@ -164,16 +185,8 @@ def process_batch():
         time_get = datetime.now()
         receipt_dict = reconstruct_receipt(transact, time_get, outcome, owner_account)
         #print("Full transaction receipt:\n". transact)         #to see unfiltered and complete block transaction receipt, uncomment this line
-        print("Transaction receipt:")
-        pp.pprint(receipt_dict, sort_dicts=False)
-        print("\n\n\n--- IMPORTANT INFORMATION ---")
-        print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH TO CHECK THE DETAIL OF THE SUBMITTED HASH IN THE FUTURE")
-        print("\n\nTime of transaction confirmed:", time_get)
-        print("\nYou have submitted:", outcome)
-        print("\nTransaction status:", transact.status)
-        print("\nTransaction hash:",hexlify(transact.transactionHash).decode("utf-8"))
-        print("Gas Used:", transact.gasUsed)
-        
+        keccak_value = Convert_to_keccak(outcome, True)
+        transaction_message(receipt_dict, time_get, outcome, transact, keccak_value)
         getpass.getpass("\n\n\nPress Enter to continue...")
         write_to_file(receipt_dict)
         status = 1
@@ -222,6 +235,8 @@ def terminal():
                 break
             else:
                 print("\nInvalid input "+userIn+"\n")
-          
-terminal()
-#welcome()
+
+if __name__ == "__main__":                  #avoid the following being executed in another code what imports functions from this code
+         
+    terminal()
+    
