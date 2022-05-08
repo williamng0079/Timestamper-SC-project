@@ -1,0 +1,15 @@
+A numbered list of references for in text citations within the comments of codes.
+
+1.  SPDX. (2018) MIT License. [online] Available from: https://spdx.org/licenses/MIT.html. (Accessed: 15 April 2022)
+2.  Truffle. (n.d.) Running Migrations. [online] Available from: https://trufflesuite.com/docs/truffle/getting-started/running-migrations/. (Accessed 15 April 2022)
+3.  Solidity. (n.d.) Layout of a Solidity Source File. [online] Available from: https://docs.soliditylang.org/en/v0.8.13/layout-of-source-files.html#version-pragma. (Accessed 15 April 2022)
+4.  Solidity. (n.d.) Contracts. [online] Available from: https://docs.soliditylang.org/en/v0.4.24/contracts.html. (Accessed: 16 April 2022)
+5.  Solidity. (n.d.) Events. [online] Available from: https://docs.soliditylang.org/en/v0.4.24/contracts.html#events. (Accessed 16 April 2022)
+6.  Fontaine, S. (2019) When should I use calldata and when should I use memory? [online] Available from: https://ethereum.stackexchange.com/questions/74442/when-should-i-use-calldata-and-when-should-i-use-memory. (Accessed 20 April 2022)
+7.  OpenZeppelin. (n.d.) Ownership and Ownable. [online] https://docs.openzeppelin.com/contracts/2.x/access-control#ownership-and-ownable. (Accessed 20 April 2022)
+8.  Python(n.d.) Web3.py:web3-eth-contract. [online] Available from:https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#web3-eth-contract. (Accessed 01 May 2022)
+9.  Python (n.d.) Web3.py:wait_for_transaction_receipt. [online] Available from: https://web3py.readthedocs.io/en/stable/web3.eth.html#web3.eth.Eth.wait_for_transaction_receipt. (Accessed 01 May 2022)
+10. Python (n.d.) pprint — Data pretty printer. [online] Available from: https://docs.python.org/3/library/pprint.html#pprint.pprint. (Accessed 03 May 2022)
+11. Python (n.d.) Web3.keccak [online] Available from: https://web3py.readthedocs.io/en/stable/web3.main.html#web3.Web3.keccak (Accessed 03 May 2022)
+12. Waller, P. (2019) pyfiglet 0.8. [software] Available from: https://pypi.org/project/pyfiglet/#description. (Accessed 05 May 2022)
+13. Solidity. (n.d.) Contract ABI Specification. [online] Available from: https://docs.soliditylang.org/en/v0.8.13/abi-spec.html#contract-abi-specification. (Accessed 03 May 2022)
