@@ -1,12 +1,15 @@
-Detailed documentation of progress and procedures:
+Detailed notes produced alonside project development:
+
 
 
 topics to add to the literature review:
 
 
 - Ethereum block interval (blockchian epoch time)
-- gas usage, gas limit, and gas price (and the calculation equation)
-- keccak 256 used by Ethereum
+- gas usage, gas limit, and gas price (and the calculation equation) (cross ref in dev section when)
+- keccak 256 used by Ethereum   (cross ref in the dev section and provide reason for implementing keccak converter)
+- Ethereum fork, (cross reference in development secition to address the delay limitation caused by ethereum forking)
+- Ropsten testnet (address unpredictable block due to low miner incentive in the development section not lit review)
 
 
 Instructions contains step by step setup procedures for the testing environment.
@@ -74,6 +77,7 @@ Install web3 package and dotenv packages for python
     - pip install pyfiglet (for the cli welcome screen)
 
 .......Coding Timestamper smart contracts.......
+
     For details please see comments within "Timestamper.sol"
     The choice of implementing the ownable access control ensures that when deployed to the testnet, 
     it can only be called by the deployer address. This is to ensure that the smart contract is only interacted through the interactor script.
@@ -175,7 +179,7 @@ Interacting with the deployed smart contract from python script interactor.py:
     
     for detail of implementation (i.e., web3), please see interactor.py and comments within.
     this allows interactions with the smart contract from a script instead of invoking the truffle console and create contract instance each time.
-    additional computation can be done here rather than inside the contract code to ensure gas usage efficiency.
+    additionally, majority of the computation can be done here rather than inside the contract code to ensure gas usage efficiency
     the interact function will be able to perform transaction with the smart contract with the user input supplied, 
     transact() will return a transaction hash, supplying this value into wait_for_transaction_receipt() function, 
     it will wait for the block confirmation of such transaction and then return a dict containing the transaction receipt with the following information:
@@ -222,15 +226,16 @@ CLI(Command Line Interface), input validation, local log file:
         - the CLI will prompt the user to drop the hex prefix (0x) as it will fail the hexdigit check
 
     single_input and batch_input functions will allow user to supply hash input through terminal and the validate funtion will be called to check input.
-    process_single and process_batch will take the return value from the input functions and call the interact function to perform transactions with the smart contract in order to log the user input.
+    process_single and process_batch will take the return value from the input functions 
+    and call the interact function to perform transactions with the smart contract in order to log the user input.
 
     The CLI is traverable (i.e., 1 main welcome menu and two sub menus: single mode and batch mode)
-    basic input sanitisation implemented.
+    basic input sanitisation implemented into the CLI.
     user can terminate the program in main menu with exit.
     the user is able to return to the main menu and cancel hash submission with quit.
     reasonable screen clears are positioned to ensure that the interface remains tidy.
 
-    Additionally, the reconstruct_receipt() function is implemented to take the comfirmed block receipt and access its attributes 
+    Additionally, reconstruct_receipt() function is implemented to take the comfirmed block receipt and access its attributes 
     and extract useful informaiton are logged into a local log file, the log file will be updated each time a transaction receipt is received.
     the following are included:
         'Time_of_Transaction_Confirmed': 
@@ -244,25 +249,6 @@ CLI(Command Line Interface), input validation, local log file:
         'Cumulative_Gas_Used':
         'Status'
      
-
-
-###### next ######
-
-
-make test scripts to generate test data and plots
-
-python keccak 256 converter (odentify diff between keccak and soliditykeccak, and what diff would it make)
-
-connect to ropsten and deploy
-
-test with ropsten (time delay)
-
-network selection in cli
-
-make sh scripts for environment setup
-
-test sh script on fresh vm
-
 
 Gas usage evaluation:
     comparison between calldata and memory (data storage methods in solidity smart contract)
@@ -284,17 +270,69 @@ Gas usage evaluation:
 
 Test data generation:
 
-    gas usage evaluation
-        compare calldata and memory storage option after the code optimisation.
-        single input
-        batch timestamp 
-        create a script that submits batchtimestamp automatically and each iteration increases the array element by 1 up until 100 (or more)
-        (plot a graph about how each additional element in the array increases the gas usage)
+    As demonstrated previously in the literature review, blockchain transactions and records are immutable due to the structural design of the blockchain
+    and transaciton records are credible because of the underlying consensus mechanism in place. 
+    For this dissertation, a smart contract coded in solidity and a CLI interactor coded in python can achieve irrefutable timestamping.
+    The developed programs are able to take hashed values of any file instance from the user and logs the keccak256 of such input onto the blockchain transaciton logs,
+    the block generation time of the block that included such transaction will be taken as the irrefutable timestamp
+    the logs will be immutable and persist on the block chain indefinitely.
+
+    Four tests were conducted to generate data in order to evaluate the solution proposed for this dissertation project of answering the question of: 
+    how to attach a timestamp to a file instance where such timestamp possesses the property of non-repudiation (irrefutable)?
     
-    accuracy of timestamp according to blocktime (test on both ganache and ropsten)
-        test script that demonstrate that continuous contract call in a duration of 13s or more (due to ethereum forks) may have a unified blocktime.
-        Example: generate a script that records the time between transaction submitted and the time of the receipt being received,
-        find the time difference with the above script for many number of submission instance and find the worst time and best time and the mean.
+    The data generation from each test is written to corresponding text files. 
+    Then, the data_analyser.py will read the data files and do the following:
+        - plot data on graph with matplotlib to visualise data
+        - calculation of average in the lists of data are performed and displayed on the graph
+
+    The accuracy of the timestamps produced is the primary factor of this project for evaluation, 
+    for this, three tests were conducted to test such accuracy.
+   
+    However, limitations exists for the delay time tests:
+
+        - block forks can occur and it is unpredictable, in an occurrence of fork, the transaction maybe logged in the dropped blocks,
+            this will cause additional time delay for the transaction to be logged by the correct chain that is accepted by the majority of nodes
+        - the tests do not consider the situation when a transaction fails for whatever reasons with most common reason being out of gas.
+
+   
+    First test (see test_time_delay.py, function delay_test_case_1 and lines 131-139)
+        - This tests the delay in seconds for single transaction request per block confirmation.
+        - This test needs be conducted with the block interval set to 13 seconds, as 13s is the average interval for the main net.
+        - The test parameter of the number of requests is set to 100 (will be more), and an avg time is calculated to be around 13s (see the graph plotted)
+        - From the graph, the best time is .... and the worst time is......
+        
+    Second test (see test_time_delay.py, function: delay_test_case_2 and lines 145-159)
+        - This tests the delay in seconds for a continuous stream of transaction requests with a 0.3 seconds interval to avoid over queuing requests.
+        - the function is executed in parallel with the multiprocessing library
+        - This test needs be conducted with the block interval set to 13 seconds, as 13s is the average interval for the main net.  
+        - The test result shows a varying delay time from 0 to 13 seconds with the average at around 7s. (see plotted graph)
+        - From the graph, we can see that the minimum delay time is..... and the maximu delay time is......
+        - The average value retrieved by the test will most likely be applicable to the normal usecase as request can be made at any point within the block interval.
+
+    Third test (see test_time_delay.py, funtion: delay_test_case_3 and lines)
+        - This tests the time delay of processing batch timestamping feature based on the number of values in the list
+        - The hash values will be randomly generated and appended (+1) to the submission list on each iteration.
+        - This test only considers the relative extra time required per extra element in the list, hence block interval time can be set to 0 (automining mode in Ganache)
+        - From the graph shown, overall relatively linear growth is demonstrated for this test, 
+            however, anomalies and spike in time delay is detected for unknown reason. 
+            another attempt is tried with the list containing only one constant value rather than random, but the result is still the same.
+    
+
+    After testing the accuracy of such timestamping method, perfect accuracy is extremely rare. Results shown that the delays are relatively acceptable, 
+        but considering other uncontrollable factors and limitaitons addressed, 
+        therefore, timestamp of the transaction should really only be trusted to be on the same date as the block timestamp.
+        
+    Next, the gas usage of the solution is tested.
+
+    Firstly, the base gas usage for timestamping a single input of 64 digits hash is determined to be ....... which is xxx higher than the standard ethereum transaction gas usage
+    next, to test the gas usage for the batchTimestamp feature implemented, the below test is performed:
+
+    Fourth test (see test_gasUsage.py)
+        - The gas usage increase per single additional element within the list batch timestamp feature will be recorded.
+        - This test is conducted with ganache set to automine meaning that there isn't a block interval time as time is not a factor in this test.
+        - From the graph, the rate of increase in gas per additional element in a list is shown to be constant. 
+            The additional gas usage per single additional element is...... 
+        
 
 
         Note:
@@ -303,16 +341,44 @@ Test data generation:
         However, you should take into mind that public Ethereum may have forks and you should wait 5-6 blocks 
         to make sure that the transaction will not be dropped along with the "side" fork."
         (Source: https://stackoverflow.com/questions/65328339/how-to-check-if-ethereum-transaction-has-been-mined)
+        
+        Common question asked regarding the orderding of transactions:
+        Order transactions within each block will be decided by the winning miner of block generation even if a smart contract is being called simultaneously
+        (Source: https://ethereum.stackexchange.com/questions/2856/what-happens-when-a-smart-contract-gets-several-similar-calls-in-the-same-block)
 
 
 
-limitaitons (in a realistic deployment):
+Project limitations (in a realistic deployment (i.e., on the Ethereum main chain)):
 1.  Etherscan reliant (verify the transaction input field in the smart contract)
+
 2.  timestamping range (an 100% acurrate timestamp is unlikely as transactions are not timestamped, only the block time 
     (ethereum has block interval of ~13s, therefore the hash input with the transaction timestamped by blocktime may experience up to 13 second delay)
     (needs to fact check, what if the latest block published does not include the transaction?)
-3.  gas price based on blockchain demand
+
+3.  gas price based on blockchain demand (can be expensive at time due to high demand of the main net)
+
+4. The transactions made to any public chains have possibility being not included by the winning miner of the new block, 
+
+
 
 future work:
 
-1.  Opimise the smart contract further to reduce gas usage,storing data within the smart contract with memory or callcan be an expensive operation 
+1.  Opimise the smart contract further to reduce gas usage,storing data within the smart contract with memory or callcan be an expensive operation
+2.  Ethereum will be soon adapting the proof of stake consensus algorithm, future work can be developing a solution that is adaptable to such change.
+
+
+
+
+###### next ######
+
+
+connect to ropsten and deploy
+
+network selection in cli
+
+make sh scripts for environment setup and deployment, try to auto feed address values into the environment file
+
+test sh script on fresh vm
+
+check again the difference between memory and calldata
+obtain base gas usage and equivalent gas fee
