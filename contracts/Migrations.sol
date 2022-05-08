@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: MIT
+
+// Truffle requires a Migrations contract in order to use the migration scripts,
+// the migration contract will be deployed initially as the first migration and won't be updated again (Consensys Software, n.d.).
+
 pragma solidity >=0.4.22 <0.9.0;
 
 contract Migrations {

@@ -1,3 +1,5 @@
+## This code will be able to read the data generated (and written to txt files) 
+## with the test scripts and provide a better data visualisation with the use of matplotlib
 import os
 import matplotlib.pyplot as plt
 import sys
@@ -7,7 +9,8 @@ def calculate_avg(list):
     return avg
 
 
-
+# Open data files in read mode and collect the value on each line to be appended into a list for plotting
+# It also retrieves the length of the list
 def read_delay_data(continuous=False):
     if continuous == True:
         continuous_req_list =[]
@@ -53,18 +56,22 @@ def read_batch_delay_data():
         return batch_delay_list, list_len
 
 
-def plot_time_delay(con=False):
+def plot_time_delay(continuous=False):
     
-    if con == True:
+    if continuous == True:
         x = 0
         dataset, data_length = read_delay_data(True)
         x_value = []
         for i in range(data_length):
             x = x+1
             x_value.append(x)
-        #print(x_value)
+        # The above for loop  will construct a list of x values to be displayed onto the graph,
+        # This is done to ensure that the first x value starts at 1 rather than 0 as time delay value generated with 0 request does not make sense.    
+
         avg = calculate_avg(dataset)
         plt.plot(x_value,dataset, label="Average time delay = {}".format(avg))
+        # This line will display the calculated average value of the list onto the legend label of the graph.
+
         plt.ylabel("Time Delay of Continuous in Seconds")
         plt.xlabel("Number of Requests")
         plt.title("Continuous Requests (w/0.3s interval between requests)")
@@ -96,7 +103,7 @@ def plot_batch_delay():
         plt.plot(x_value, dataset)
         plt.ylabel("Addtional Time Required to Process the Batch Timestamp List")
         plt.xlabel("Number of Hash within the batch timestamp list")
-        plt.title("Process Time of n Number of Elements in the Batch Timestamp list ")
+        plt.title("Process Time of n Number of Elements within the Batch Timestamp List ")
         plt.show()
 
 def plot_gasUsage():
@@ -107,6 +114,8 @@ def plot_gasUsage():
             x = x+1
             x_value.append(x)
         gas_diff = dataset[1] - dataset[0] 
+        # A quick calculation to determine the increase in gas (the increase per additional element is constant)
+
         plt.plot(x_value, dataset, label= "Increase in gas unit per additional element in list = {}".format(gas_diff))
         plt.ylabel("Gas Usage in Gas Units")
         plt.xlabel("Number of Hash within the batch timestamp list")
@@ -116,6 +125,7 @@ def plot_gasUsage():
 
 
 if __name__ == "__main__":
+    # Simple CLI to allow selection between data plots
     os.system("clear")
     print("Which dataset would you like to visualise?")
     print("\n1. PLOT TIME DELAY DATA FOR SINGLE REQUEST PER BLOCK GENERATION")

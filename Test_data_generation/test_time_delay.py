@@ -1,44 +1,11 @@
-## This is test will be ran on both private local ganache node and ropsten public testnet (more realistic environment) 
-# this script will perform timestamping of a sha256 hash multiple times 
-#   in order to gather test data to determine the average time delay 
-# the difference is taken between immediately before input submission and immediately after block confirmation
-# (this test does not take into account limitations such as situations where the ethereum forks)
-# (this test also does not take into account of failed transactions, 
-#  it assumes that all transactions are successful (i.e., status = 1 on the receipt))
-# This hash will be used repeatedly: 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
-# The results will be plotted with matplotlib to provide a visualisation of the test data.
-# Block interval for the private local ganache node has been set to 13s as it is the average time for the main net
-
-# NB:  
-# Order transactions within each block will be decided by the winning miner of block generation even if a smart contract is being called simultaneously
-# (Source: https://ethereum.stackexchange.com/questions/2856/what-happens-when-a-smart-contract-gets-several-similar-calls-in-the-same-block)
-# the cli interactor is designed to wait for the block confirm before any other request can be made
-# therefore, the average delay time is expected to be consistent with the time taken for the block generations (ignoring forks)
-# the result of this experiment can be used to determine a timeout option for the wait for block receipt feature)
-
-#   the batch timestamp feature was implemented to solve the issue of only one transaction is made per block for the interactor.
-#       (i.e., with default timestamp function, that means only one hash can be submitted per block generation)
-
-
-
-# Three types of tests will be conducted for the timestamp delay 
-# 1.   Test the time delay for the cli code, i.e., 
-# single request per block confirmation (the result of average time delay is expected to be consistent to the block interval of the node)
-# in the case of the ganache local node, as the block interval is set to 13s to mimic the avg ethereum block interval, the avg time delay of transaction is expected to be extremely close to 13s
-# 2.   Test time delay when transaction requests are submitted in a continuous fashion, i.e., input are supplied continuously 
-# test 2 can be achieved with the multiprocessing library 
-# for test two the expected avg delay is at around 7s over a large number of requests (13/2)
-# display average on the plotted graph
-
-#3.    This test case aims to uncover the addtional time delay in seconds per additional element within the list of the of batch timestamp feature.
-
-## overall relatively linear relationship as expected, anomalies and spike in time is detected for unknown reason. 
-# (maybe the difference in hash value?) tested: the value of the hash does not contributed to the reason of spikes in time
-
-
+## This script will be testing three scenarios relating to the delay in the timestamping user inputs
+## The time delay tested in this script does not take into account the situation where the blockchain fork occurs as such factor is unpredicatble.
+## Additionally, this test does not take into account failed transactions caused by various reasons (e.g.,out of gas)
+## The timestamps are taken at two points of the execution for the difference calculation:
+##      Before: the timestamp right before the input submission and the function call.
+##      After: the timestamp right after block confirmation receipt is received.
 import time
 import multiprocessing as mp
-from xml.dom.minidom import Element
 from web3 import Web3 
 import sys
 import os
@@ -46,10 +13,9 @@ import json
 from dotenv import load_dotenv
 from datetime import datetime
 import binascii
+sys.path.append('../Timestamper-SC-project/')
 
-
-# logic 4: store the difference into an array 
-# logic 5: plot the data within the array: time delay on y axis and the transaction occurrence on x axis
+# Loads the environment constants and store required values into variables.
 load_dotenv()                                           
 node_provider = os.environ['LOCAL_NODE_PROVIDER']        
 Timestamper_abi = json.loads(os.environ['CONTRACT_ABI']) 
@@ -58,19 +24,24 @@ owner_account = os.environ['OWNER_ADDRESS']
 web3_connection = Web3(Web3.HTTPProvider(node_provider)) 
 web3_connection.eth.default_account = owner_account
 
+# This generate a random hex string with the length of 64 upon each call.
 def generate_hash():
     random_hash_string = binascii.b2a_hex(os.urandom(32)).decode("utf-8")
     #print(random_hash_string)
     return random_hash_string
 
-
+# This will perform simple subtraction of two timestamps and obtain the difference in seconds
 def get_time_diff(before, after):
     time_diff = after - before
-    in_sec = time_diff.total_seconds()      #(Source: https://geekflare.com/calculate-time-difference-in-python/#:~:text=To%20calculate%20the%20total%20time,birthday%20is%2019017960.127416%20seconds%20away.)
-
+    in_sec = time_diff.total_seconds()      
     return in_sec
 
 
+## 1. Test the delay in seconds for single transaction request per block confirmation.
+##    The hash input value to be used for this test is: 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
+##    This test needs be conducted with the block interval set to 13 seconds, as 13s is the average interval for the main net.
+##    timestamp function is called for this test.
+##    The test result is expecetd to be consistent with the block generation (interval) time, in this case, ~13s.
 def delay_test_case_1():
     global delay_list 
     
@@ -82,12 +53,18 @@ def delay_test_case_1():
     delay_value = (time_after - time_before).total_seconds()
     print(delay_value)
     delay_list.append(delay_value)
-    
+    # Upon each function call, the input argument will be submitted and timestamp function will be called,
+    # The delay time is calculated and appended to the global delay_list for later data visualisation.
+
     return delay_value
 
 
-#logic: loop transaction, get time before submit and time after wait for receipt
-# the time of submission is taken right before the input is being processed by the smart contract
+## 2. Test the delay in seconds for a continuous stream of transaction requests with a 0.3 seconds interval to avoid over queuing requests.
+##    The hash input value to be used for this test is: 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
+##    This test needs be conducted with the block interval set to 13 seconds, as 13s is the average interval for the main net.
+##    timestamp function is called for this test.
+##    The test result is expected to show a varying delay time from 0 to 13 seconds with the average at around 7s.
+##    The average value retrieved by the test will most likely be applicable to the normal usecase as request can be made at any point within the block interval.
 def delay_test_case_2():
     
     contract = web3_connection.eth.contract(address=contract_address, abi=Timestamper_abi)
@@ -98,17 +75,19 @@ def delay_test_case_2():
     delay_value = (time_after - time_before).total_seconds()
     
     print(delay_value)
-    
+
+    # This test will be perform with multiprocessing library, hence each time the time delay will be appended to an external data file
     with open ("../Timestamper-SC-project/Test_data_generation/Continuous_Delay.txt", "a") as testcase_2:
         testcase_2.write(str(delay_value))
         testcase_2.write("\n")
     return delay_value
 
-## logic: get the avg extra time required with additional element in the batch timestamp funtion
 
-#  for this test, ganache is set to automine as block interval time does not need to be taken into account,
-#  as the test purpose is to obtain the addition time required for each additional element in the batch timestamp list
-#  hash generation for this will be random instead of a constant hash value for extra realism
+## 3. Test the time delay of processing batch timestamping feature based on the number of 64 digits hex values in the list
+##    The hash values will be randomly generated and appended (+1) to the submission list on each iteration.
+##    This test only considers the relative extra time required per extra element in the list, hence block interval time can be set to 0 (automining mode in Ganache)
+##    batchTimestamp function is called for this test.
+##    Overall relatively linear growth is expected for this test. 
 def delay_test_case_3(hash_list):
     
     contract = web3_connection.eth.contract(address=contract_address, abi=Timestamper_abi)
@@ -123,8 +102,11 @@ def delay_test_case_3(hash_list):
 
 
 if __name__ == "__main__":
+    ## Simple CLI for user to select what test they would like to do.
     os.system("clear")
-    print("select timestamping delay test:")
+    print("Select timestamping delay test:")
+    print("\n For test case 1 & 2, please ensure the block interval of the node provider is set to 13s")
+    print("\n For test case 3, set the block interval back to 0 (automining mode in Ganache")
     print("\n1. Test case 1: Single transaction request per block generation")
     print("\n2. Test case 2: Consecutive transaction request")
     print("\n3. Test case 3: Increase in time per additional element in the batch timestamp list")
@@ -136,8 +118,11 @@ if __name__ == "__main__":
         delay_list = []
         for i in range (100):
             delay_test_case_1()
-        
-        
+        with open("../Timestamper-SC-project/Test_data_generation/Single_Delay.txt", "w") as testcase_1:
+            for i in delay_list:
+                testcase_1.write(str(i))
+                testcase_1.write("\n")
+
 
         print("\nPlease use data_analyser.py to visualise the obtained data and obtain an average value")
         
@@ -151,17 +136,22 @@ if __name__ == "__main__":
         print("Use data_analyser.py to obtain the average value and graph of the data ")
         for i in range (300):
             mp.Process(target = delay_test_case_2).start()
+            # The loop will generate process instances continuously and have them executing in parallel untill the number of processes is equal to the range set above.
+            # Too many request process running in parallel will freeze the VM, 300 is tested to be able to produce desirable test result while not being too small.
+
             time.sleep(0.3)                   
-#within the block interval, the number of transaction requests is limited, by setting the 0.3s interval between each request, 
-#it avoids the problem where too many requests are queued at once which results in delay time that is significantly longer than block interval.
+            # Within the block interval, the number of transaction requests is limited, by setting the 0.3s interval between each request, 
+            # It avoids the problem where too many requests are queued at once which results in delay time that is significantly longer than block interval.
     
+
     elif selection == "3":
         print("INITIATING TEST CASE 3: ADDITIONAL TIME DELAY PER ELEMENT IN BATCH TIMESTAMP LIST.......")
         input_list = []
         delay_list = []
         for i in range(100):
-            #new_hash = generate_hash()
-            input_list.append("4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e")                           # modify this line to experiment with the same hash value appending to the list each time
+            new_hash = generate_hash()
+            input_list.append(new_hash)
+            #input_list.append("4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e")   # Uncomment this line to test constant hash value in the list
             delay_time = delay_test_case_3(input_list)
             print(delay_time)
             delay_list.append(delay_time)
