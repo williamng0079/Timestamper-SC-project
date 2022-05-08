@@ -6,7 +6,7 @@ topics to add to the literature review:
 
 - Ethereum block interval (blockchian epoch time)
 - gas usage, gas limit, and gas price (and the calculation equation)
--
+- keccak 256 used by Ethereum
 
 
 Instructions contains step by step setup procedures for the testing environment.
@@ -18,7 +18,7 @@ Python version: 3.8.10
 
 
 Set up Ethereum 
-    This allows easy management of distribution and independent software vendor software sources. 
+    This allows easy management of distribution and independent software sources. 
     (https://askubuntu.com/questions/1000118/what-is-software-properties-common)
     - sudo apt install software-properties-common
 
@@ -32,7 +32,7 @@ Set up Ethereum
     - sudo apt install ethereum
 
 Ganache GUI (an in memory ethereum node that provides an user friendly gui, 
-    This is for locally testing the smart contracts before deployment onto the main chain)
+    This is for locally testing the smart contracts before deployment onto the test chain)
     Download link (https://trufflesuite.com/ganache/) 
 
     Change permission within properties of the downloaded package to ensure that ganache can be excuted as a program
@@ -79,7 +79,7 @@ Install web3 package and dotenv packages for python
     it can only be called by the deployer address. This is to ensure that the smart contract is only interacted through the interactor script.
     utilising indexed event and emit log to store the input value (hash) supplied by the user onto the ethereum blockchain.
     note: ethereum will hash the value being emitted by the event log with keccak 256, therefore, 
-    refering to the past transaction of hash submitted will require an additional step (hashing the submiited hash with keccak 256)
+    referring to the past transaction of hash submitted will require an additional step (hashing the submitted hash with keccak 256)
 
     Two types of timestamping functions are implemented for the smart contract to be deployed.
     thery are :
@@ -96,12 +96,12 @@ Dependency modules required for the smart contract (modules are marked in .gitig
     openzepplelin/contracts (Ownable.sol):
     - npm i @openzepplelin/contracts
 
-    openzeppelin, upgradeable contract plugin:
-    - npm install --save-dev @openzeppelin/truffle-upgrades
+    (not required)  openzeppelin, upgradeable contract plugin:
+                    - npm install --save-dev @openzeppelin/truffle-upgrades
 
-
-    hardhat (Console.sol):    
-    - npm install --save-dev hardhat
+    
+    (not required)            hardhat (Console.sol):    
+                    - npm install --save-dev hardhat
 
 
 Deploy and test the smart contract:
@@ -116,7 +116,7 @@ Deploy and test the smart contract:
             network_id: "*",       // Any network 
         }
     
-    Import truffle porject to ganache:
+    Import truffle project to ganache:
         Select new ethereum project in the main menu and supply the path to the truffle-config.js file.
     
     Create deployment/migration script for the smart contract
@@ -129,10 +129,10 @@ Deploy and test the smart contract:
         Note that Truffle requires a Migrations contract in order to use the deploy feature.
         the migration contract will be deployed initially as the first migration and won't be updated again.
         Within the directory of the truffle project run the following commands:
-        - truffle compile //this will compile all the smart contracts withint the "contracts" directory
-        - truffle deploy --network deployment //this will deploy the compiled contracts to the ethereum node, network can be specified
+        - truffle compile //this will compile all the smart contracts within the "contracts" directory
+        - truffle deploy --network development //this will deploy the compiled contracts to the ethereum node, network can be specified
 
-        To confirm the deployment, navigate to the contracts section within ganache to check the status of the SCs.
+        To confirm the deployment, navigate to the contracts section within ganache to check the status of the Smart Contracts.
     
     Interact with the deployed SCs and perform transactions with truffle console:
 
@@ -142,13 +142,17 @@ Deploy and test the smart contract:
 
         Use the following scripts within the console to specify the contract to be interacted with: 
 
-        - const hashinput = await Timestamper.deployed(); //define the contract
-        - await hashinput.timestamp("\\enter the hash string here//")   // note that "await" is called before the promise, this is to ensure such JavaScript code runs in a synchronous fashion.
+
+        - const contract = await Timestamper.deployed(); //define the contract
+        - contract.address                                             // This will obtain the contract address for the interactor
+        - await contract.timestamp("\\enter the hash string here//")   // note that "await" is called before the promise, this is to ensure such JavaScript code runs in a synchronous fashion.
                                                                         (https://medium.com/coinmonks/testing-solidity-with-truffle-and-async-await-396e81c54f93)
+        
+
 
         Test hash for this project:
         sha256:    4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
-        keccak256: e1fcf0cec72636dceddfb7814bc3dceaaf4ad0ffa9dbb6557ac14cc92c3c9d8c
+        keccak256 value of the above hash: e1fcf0cec72636dceddfb7814bc3dceaaf4ad0ffa9dbb6557ac14cc92c3c9d8c
 
 
         Next, navigate to the transaction section within the ganache gui to see the successful transaction made,
@@ -244,10 +248,20 @@ CLI(Command Line Interface), input validation, local log file:
 
 ###### next ######
 
-network selection in cli
-make test scripts to generate test data and plots
-    
 
+make test scripts to generate test data and plots
+
+python keccak 256 converter (odentify diff between keccak and soliditykeccak, and what diff would it make)
+
+connect to ropsten and deploy
+
+test with ropsten (time delay)
+
+network selection in cli
+
+make sh scripts for environment setup
+
+test sh script on fresh vm
 
 
 Gas usage evaluation:

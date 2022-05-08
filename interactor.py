@@ -34,7 +34,10 @@ def connection_status():
     return web3_connection.isConnected()
     
 def interact(hash, batch = False):                                     #takes a single user input (hash) as argument to be logged into the solidity event log
+    
     contract = web3_connection.eth.contract(address=contract_address, abi=Timestamper_abi)  #initiating an object for the deployed contract. 
+    
+    
     if (batch == True):
         input_tx_hash = contract.functions.batchTimestamp(hash).transact()              #.transact() will returns the transaction hash.
         tx_receipt = web3_connection.eth.wait_for_transaction_receipt(input_tx_hash)    #as name suggests, wait_for_transaction_receipt will ensure that the transaction has been included within a block (Source: https://web3py.readthedocs.io/en/stable/web3.eth.html#web3.eth.Eth.wait_for_transaction_receipt)
@@ -107,7 +110,7 @@ def batch_input():
             hash_list.append(userInput)
     return hash_list 
 
-
+# (Source: https://web3py.readthedocs.io/en/stable/web3.main.html#web3.Web3.keccak)
 def Convert_to_keccak(value, list=False):
     
     
@@ -149,9 +152,9 @@ def transaction_message(_receipt, _time, _input, _transact, _kVal):
     print("\nWITHOUT THE TRANSACTION HASH, YOU WILL NOT BE ABLE TO FIND THE TIMESTAMP IN THE FUTURE")
     print("\nTHE KECCAK256 VALUES ARE YOUR SUBMISSIONS HASHED AGAIN BY SOLIDITY KECCAK AND IT WILL BE SHOWN ON THE LOG PAGE OF YOUR NODE PROVIDER")
     print("\n\nTime of transaction confirmed:", _time)
-    print("\nYou have submitted\n")
+    print("\nYou have submitted:\n")
     pp.pprint(_input)
-    print("\nKeccak256 values of your submission (in order):\n")
+    print("\nKeccak256 values of your submissions (in order):\n")
     pp.pprint(_kVal)
     print("\n\nTransaction status:", _transact.status)
     print("\nTransaction hash:",hexlify(_transact.transactionHash).decode("utf-8"))
@@ -235,8 +238,9 @@ def terminal():
                 break
             else:
                 print("\nInvalid input "+userIn+"\n")
-
-if __name__ == "__main__":                  #avoid the following being executed in another code what imports functions from this code
+                
+# avoid the following being executed in another code what imports functions from this code
+if __name__ == "__main__":                  
          
     terminal()
     
