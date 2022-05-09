@@ -5,7 +5,10 @@ Then, a list of program executions and descriptions will be provided to demonstr
 The below instructions and the setup.sh script have been tested on a fresh Ubuntu 20.04 LTS environment, 
 please ensure that they are performed IN ORDER to avoid any potential errors.
 
-mnemonic for Ganache: dad machine patrol lemon atom element menu often dream inch kitten noise
+Base environment
+OS version: Ubuntu 20.04.4 LTS
+Python version: 3.8.10
+
 
 1.  Ganache Download
     Ganache is a local private Ethereum blockchain node provider with an user friendly graphical interface and a built in block explorer (Truffle, n.d.).

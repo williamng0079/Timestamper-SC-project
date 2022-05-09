@@ -12,33 +12,6 @@ topics to add to the literature review:
 - Ropsten testnet (address unpredictable block due to low miner incentive in the development section not lit review)
 
 
-Instructions contains step by step setup procedures for the testing environment.
-
-
-Environment:
-OS version: Ubuntu 20.04.4 LTS
-Python version: 3.8.10
-
-
-Set up Ethereum 
-    This allows easy management of distribution and independent software sources. 
-    (https://askubuntu.com/questions/1000118/what-is-software-properties-common)
-    - sudo apt install software-properties-common
-
-    This adds the ethereum repository 
-    - sudo add-apt-repository -y ppa:ethereum/ethereum
-
-    Check for ethereum repository updates
-    - sudo apt update
-
-    Install ethereum (Geth)
-    - sudo apt install ethereum
-
-Ganache GUI (an in memory ethereum node that provides an user friendly gui, 
-    This is for locally testing the smart contracts before deployment onto the test chain)
-    Download link (https://trufflesuite.com/ganache/) 
-
-    Change permission within properties of the downloaded package to ensure that ganache can be excuted as a program
 
 
 MetaMask
