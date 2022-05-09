@@ -241,7 +241,7 @@ def terminal():
     while(True):
         os.system("clear")
         welcome()
-        print("\n\nConnecting to the Ethereum node.......\n\n")
+        print("\n\nConnecting to the Local Ethereum node.......\n\n")
         
         if connection_status() == True:
             print("Successfully connected to...\n")

@@ -59,8 +59,10 @@ Node.Js and npm package manager (server side JavaScript platform that allows the
 
     For the most recent version of the node.js installation curl command, go to https://nodejs.org/en/download/.
     Below are the commands used to install node.js v18 and npm 8.8.0 (Lastest at the time)
-        - curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - 
+        
+        - curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
         - sudo apt-get install -y nodejs
+        - npm install @truffle/hdwallet-provider
         - sudo apt install -y build-essential (useful to install certain npm packages)
 
 
@@ -359,7 +361,13 @@ Ropsten Delployment with infura node provider Test:
     - Obtain the mnemonic from metamask and put into the truffle-config.js file
     - register infura to obtain a project id 
     - https://ropsten.infura.io/v3/bc3734d38ca046b2bb6091743cd03a4f
+    - mnemonic for the test account that contains test eth
+    
+    Successfully deployed:
+    see transaction log in ropsten_log.txt
 
+    batchTimestamp check with 3 elements: 
+        tx_hash: 0x7e71c18277373b32a45286f08b4d85c141af07db69bba9ef03f9e06bbc0bfb37
 
 
 
@@ -397,3 +405,12 @@ test sh script on fresh vm
 
 check again the difference between memory and calldata
 obtain base gas usage and equivalent gas fee
+
+Hash input used: ["4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e","4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e","4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e"]
+
+calldata single mode gas Usage: 25247
+calldata batch mode gas Usage (1 element): 26022
+
+memory single mode gas Usage: 25933
+memory batch mode gas Usage (1 element): 27194
+Usage increase per element: 3997

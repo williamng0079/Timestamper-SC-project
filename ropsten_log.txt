@@ -1,0 +1,110 @@
+This log file contains the transaction detail for the ropsten deployment.
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+Starting migrations...
+======================
+> Network name:    'ropsten'
+> Network id:      3
+> Block gas limit: 8000000 (0x7a1200)
+
+
+1_initial_migration.js
+======================
+
+   Deploying 'Migrations'
+   ----------------------
+   > transaction hash:    0xefd20c41afbfee91ab5acf7e0a7403e66e8f435b490fddd02974b35cc88c76c0
+   > Blocks: 1            Seconds: 9
+   > contract address:    0xb6fa1c9094afEe7713DDd9e0C31A20070baF9B71
+   > block number:        12250095
+   > block timestamp:     1652057611
+   > account:             0x05b4E8c1421B9716c86d7C088255F2C8Fac2e28f
+   > balance:             2.199374614993245842
+   > gas used:            250154 (0x3d12a)
+   > gas price:           2.500000027 gwei
+   > value sent:          0 ETH
+   > total cost:          0.000625385006754158 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 12250097)
+   > confirmation number: 2 (block: 12250098)
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.000625385006754158 ETH
+
+
+2_timestamper_migration.js
+==========================
+
+   Deploying 'Timestamper'
+   -----------------------
+   > transaction hash:    0x82982816e40b67dfd32dde01366c33cd3a45eaed26b9f7f3ef8dcbe20a9bf465
+   > Blocks: 2            Seconds: 13
+   > contract address:    0x23E238Ef880DB0848d95C90a8944093B5B5AF3fD
+   > block number:        12250102
+   > block timestamp:     1652057755
+   > account:             0x05b4E8c1421B9716c86d7C088255F2C8Fac2e28f
+   > balance:             2.19769334497835884
+   > gas used:            626595 (0x98fa3)
+   > gas price:           2.500000022 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00156648751378509 ETH
+
+   Pausing for 2 confirmations...
+
+   -------------------------------
+   > confirmation number: 1 (block: 12250103)
+   > confirmation number: 2 (block: 12250104)
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.00156648751378509 ETH
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.002191872520539248 ETH
+
+
+A successful smart contract call log (input = 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e)
+{
+  tx: '0x944812f07b6bd65daef7833420a6c52e2af94f30a5e0fa43e295420e9aaa3f85',
+  receipt: {
+    blockHash: '0xa99534f22501629f2e24e2e72f132d26bfa5165109866551c4623d1ad5de96d7',
+    blockNumber: 12250113,
+    contractAddress: null,
+    cumulativeGasUsed: 26547,
+    effectiveGasPrice: '0x9502f917',
+    from: '0x05b4e8c1421b9716c86d7c088255f2c8fac2e28f',
+    gasUsed: 26547,
+    logs: [ [Object] ],
+    logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000040000000000020210000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000100000000',
+    status: true,
+    to: '0x23e238ef880db0848d95c90a8944093b5b5af3fd',
+    transactionHash: '0x944812f07b6bd65daef7833420a6c52e2af94f30a5e0fa43e295420e9aaa3f85',
+    transactionIndex: 0,
+    type: '0x2',
+    rawLogs: [ [Object] ]
+  },
+  logs: [
+    {
+      address: '0x23E238Ef880DB0848d95C90a8944093B5B5AF3fD',
+      blockHash: '0xa99534f22501629f2e24e2e72f132d26bfa5165109866551c4623d1ad5de96d7',
+      blockNumber: 12250113,
+      logIndex: 0,
+      removed: false,
+      transactionHash: '0x944812f07b6bd65daef7833420a6c52e2af94f30a5e0fa43e295420e9aaa3f85',
+      transactionIndex: 0,
+      id: 'log_cd91a4c9',
+      event: 'Timestamp',
+      args: [Result]
+    }
+  ]
+}
