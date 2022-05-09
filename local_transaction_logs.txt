@@ -202,3 +202,17 @@
 
 
 
+{'Transaction_Elapse_Time': 0.160647,
+ 'Time_of_Transaction_Confirmed': '2022-05-09 23:47:31.210187',
+ 'User_Input': '4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e',
+ 'Transaction_Hash': '099c9246885533eb543cd205d52ed8623b4585743320905c463ddd9d2c997f62',
+ 'Block_Hash': 'da6c6d1c6f084c736663485650a09587ee5dfdc260a0e250c87d097a3a108352',
+ 'Block_Number': 5,
+ 'From': '0xF5448F301BA63CD475A5FD6711d7E20EB3018D5A',
+ 'To': '0xA8b3601c5930AfC2d6B8d780B88D316347b9D299',
+ 'Gas_Used': 25247,
+ 'Cumulative_Gas_Used': 25247,
+ 'Status': 1}
+
+
+

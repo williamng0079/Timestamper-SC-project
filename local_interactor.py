@@ -182,7 +182,7 @@ def transaction_message(_receipt, _time, _elapse, _input, _transact, _kVal):
     print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH AND THE KECCAK256 VALUES OF YOUR SUBMISSIONS FOR FUTURE REFERENCE OF THE TIMESTAMPS")
     print("\nWITHOUT THE TRANSACTION HASH, YOU WILL NOT BE ABLE TO FIND THE TIMESTAMP IN THE FUTURE")
     print("\nTHE KECCAK256 VALUES ARE YOUR SUBMISSIONS HASHED AGAIN BY SOLIDITY KECCAK AND IT WILL BE SHOWN ON THE LOG PAGE OF YOUR NODE PROVIDER")
-    print("\n\nThis Transactin Took {} Seconds to be confirmed by the block".format(_elapse) )
+    print("\n\nThis Transaction Took {} Seconds to be confirmed by the block".format(_elapse) )
     print("\nTime of transaction confirmed:", _time)
     print("\nYou have submitted:\n")
     pp.pprint(_input)
