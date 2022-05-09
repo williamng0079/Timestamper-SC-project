@@ -47,7 +47,7 @@ MetaMask
     Such wallet address will be linked to the Ropsten ethereum testnet and test ether will be obtained from https://faucet.dimensions.network/.
     This is setup for later deployment tests.
 
-    - npm install @truffle/hdwallet-provider
+
 
 
 
@@ -58,7 +58,7 @@ Node.Js and npm package manager (server side JavaScript platform that allows the
         - sudo apt install curl
 
     For the most recent version of the node.js installation curl command, go to https://nodejs.org/en/download/.
-    Below are the commands used to install node.js v18 and npm 8.8.0 (Lastest at the time)
+    Below are the commands used to install node.js lts (latest stable )
         
         - curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
         - sudo apt-get install -y nodejs
@@ -257,22 +257,24 @@ CLI(Command Line Interface), input validation, local log file:
      
 
 Gas usage evaluation:
-    comparison between calldata and memory (data storage methods in solidity smart contract)
-    Gas used to store a example hash string: 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
-                                            
-    calldata: 88870
-    memory: 89380
-    calldata(unecessary codes removed):25247
-    difference between calldata and memory variable storage method:
-
-
-    improve the the gas usage efficiency (reduce cost):
+                                
+    improve gas usage efficiency (reduce cost):
         the emitted event for this smart contract still has to log the hash input into the transaction.
         utilising uint256 to store the hex input can reduce gas but int converted value will be written into the transaction log instead of the hex value.
         therefore storing input as string with calldata is used.
-        unecessary varaiable declaration and function call are removed (i.e., console.log()) to reduce gas.
+        unecessary varaiable declaration and assignment and function calls are removed (i.e., console.log(), retrieve()) to reduce gas.
 
+    comparison between calldata and memory (data storage methods in solidity smart contract)
+    Gas used to store a example hash string: 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e
 
+    Hash input used: ["4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e","4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e","4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e"]
+
+    calldata single mode gas Usage: 25247
+    calldata batch mode gas Usage (1 element): 26022
+
+    memory single mode gas Usage: 25933
+    memory batch mode gas Usage (1 element): 27194
+    Usage increase per element: 3997
 
 Test data generation:
 
@@ -352,6 +354,8 @@ Test data generation:
         Order transactions within each block will be decided by the winning miner of block generation even if a smart contract is being called simultaneously
         (Source: https://ethereum.stackexchange.com/questions/2856/what-happens-when-a-smart-contract-gets-several-similar-calls-in-the-same-block)
 
+
+
 Ropsten Delployment with infura node provider Test:
     
     
@@ -361,10 +365,30 @@ Ropsten Delployment with infura node provider Test:
     - Obtain the mnemonic from metamask and put into the truffle-config.js file
     - register infura to obtain a project id 
     - https://ropsten.infura.io/v3/bc3734d38ca046b2bb6091743cd03a4f
-    - mnemonic for the test account that contains test eth
+    - mnemonic for the test account that contains test eth: 
+        "steel tiny wreck avocado scrub valid entry excuse enable expect steel cotton"
     
     Successfully deployed:
     see transaction log in ropsten_log.txt
+
+    interact with the deployed ropsten contracted with the following procedure:
+        
+        Initiate the interaction console with truffle
+        - truffle console --network ropsten     
+
+        Instantiate contract object for the interaction
+        - const contract = await Timestamper.deployed();
+
+        Call smart contract function:
+
+            single timestamping mode
+            - await contract.timestamp("\\enter-the-hash-value-here//")
+        
+            batch timestamping function:
+            - await contract.batchTimestamp(["\\Enter-hash-here//","\\and-here//","\\and-here//","\\and-more-can-be-added-as-it-is-a-list//","...."])
+
+        make sure that the trasaction hash is noted on each submission.
+
 
     batchTimestamp check with 3 elements: 
         tx_hash: 0x7e71c18277373b32a45286f08b4d85c141af07db69bba9ef03f9e06bbc0bfb37
@@ -390,27 +414,12 @@ future work:
 2.  Ethereum will be soon adapting the proof of stake consensus algorithm, future work can be developing a solution that is adaptable to such change.
 
 
+###### NEXT #####
 
+Report write up, include screenshots of tests with re adjusted parameters
 
-###### next ######
+Make a data flow diagram
 
+when done, before submission, empty local_transaction_logs.txt
 
-connect to ropsten and deploy
-
-network selection in cli
-
-make sh scripts for environment setup and deployment, try to auto feed address values into the environment file
-
-test sh script on fresh vm
-
-check again the difference between memory and calldata
-obtain base gas usage and equivalent gas fee
-
-Hash input used: ["4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e","4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e","4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e"]
-
-calldata single mode gas Usage: 25247
-calldata batch mode gas Usage (1 element): 26022
-
-memory single mode gas Usage: 25933
-memory batch mode gas Usage (1 element): 27194
-Usage increase per element: 3997
+rename folder for submission

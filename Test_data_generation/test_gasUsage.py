@@ -8,7 +8,7 @@ import json
 from dotenv import load_dotenv
 import binascii
 import sys
-sys.path.append('../Timestamper-SC-project/')
+sys.path.append('./Timestamper-SC-project/')
 
 # Loading the required variables for smart contract interaction from the environment file
 load_dotenv()                                           
@@ -43,7 +43,9 @@ if __name__ == "__main__":
     gas_list = []
 
     # For each iteration of the loop, a new random 64 digits hash string will be generated and appended to the list.
-    for i in range(100):    # The range can be modified to test different numbers of element in the batch timestamp list
+    
+    for i in range(100):                # The range can be modified to test different numbers of element in the batch timestamp list
+    
         new_hash = generate_hash()
         input_list.append(new_hash)
         eth_gas = transact(input_list)

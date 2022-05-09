@@ -13,7 +13,7 @@ import json
 from dotenv import load_dotenv
 from datetime import datetime
 import binascii
-sys.path.append('../Timestamper-SC-project/')
+sys.path.append('./Timestamper-SC-project/')
 
 # Loads the environment constants and store required values into variables.
 load_dotenv()                                           
@@ -116,7 +116,9 @@ if __name__ == "__main__":
     if selection == "1":
         print("\nINITIATING TEST CASE 1: SINGLE REQUEST PER BLOCK...\n")
         delay_list = []
-        for i in range (100):
+        
+        for i in range (100):                       # Modify the number in range to change the test parameter
+        
             delay_test_case_1()
         with open("../Timestamper-SC-project/Test_data_generation/Single_Delay.txt", "w") as testcase_1:
             for i in delay_list:
@@ -134,7 +136,9 @@ if __name__ == "__main__":
         # this is to ensure data in the file from the previous test instance is erased
             
         print("Use data_analyser.py to obtain the average value and graph of the data ")
-        for i in range (300):
+        
+        for i in range (300):                       # Modify the number in range to change the test parameter
+
             mp.Process(target = delay_test_case_2).start()
             # The loop will generate process instances continuously and have them executing in parallel untill the number of processes is equal to the range set above.
             # Too many request process running in parallel will freeze the VM, 300 is tested to be able to produce desirable test result while not being too small.
@@ -148,7 +152,9 @@ if __name__ == "__main__":
         print("INITIATING TEST CASE 3: ADDITIONAL TIME DELAY PER ELEMENT IN BATCH TIMESTAMP LIST.......")
         input_list = []
         delay_list = []
-        for i in range(100):
+        
+        for i in range(100):                        # Modify the number in range to change the test parameter
+        
             new_hash = generate_hash()
             input_list.append(new_hash)
             #input_list.append("4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e")   # Uncomment this line to test constant hash value in the list

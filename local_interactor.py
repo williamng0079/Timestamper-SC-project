@@ -13,7 +13,7 @@ import string
 import time
 import getpass
 from binascii import hexlify                
-import pyfiglet                             #(Source: https://pypi.org/project/pyfiglet/0.7/)
+import pyfiglet                          
 from datetime import datetime               
 import pprint as pp                         
 
@@ -46,7 +46,7 @@ def interact(hash, batch = False):
 
 
 def write_to_file(receipt):
-    with open("transaction_logs.txt", "a") as logfile:
+    with open("local_transaction_logs.txt", "a") as logfile:
         pp.pprint(receipt, logfile, sort_dicts=False)                                
         logfile.write("\n\n\n")
         # Use the data pretty printer to presesnt the logged info in a more readable format (Python, n.d.)
@@ -73,7 +73,7 @@ def single_input():
     print("\n\n---Please supply a hash (without the '0x' prefix)---\nEnter quit to go back\n\n")
     # It prompts the user to remove the hex prefix (0x) as x will fail the string validation check
 
-    userInput = input("Enter your value >>")
+    userInput = input("Enter your value >> ")
     if userInput == "quit": 
         print("\nNothing has been submitted to the smart contract\n")  
         userInput = 0
@@ -103,7 +103,7 @@ def batch_input():
     hash_list = []
     print("\n\n---Please supply a hash (without the '0x' prefix)---\nEnter done to finish the submission\nEnter quit to discard submission\n\n")
     while True:
-        userInput = input("Enter your value >>")
+        userInput = input("Enter your value >> ")
         if userInput == "quit":
             hash_list = 0
             print("\nuser quits the submission\n")
@@ -154,8 +154,9 @@ def Convert_to_keccak(value, list=False):
 # This function will take the transaction receipt returned by the interact function and retrieve crucial attributes from it,
 # it also takes other useful information such as time of receipt and user input of the transaction.
 # then, it will store them in a python dictionary for both terminal display and local log file (to be pretty printed for a more readable format).
-def reconstruct_receipt(tx_receipt, time, userInput, sender):
+def reconstruct_receipt(tx_receipt, time, elapse, userInput, sender):
     receipt = {}
+    receipt["Transaction_Elapse_Time"]  = elapse
     receipt["Time_of_Transaction_Confirmed"] = str(time)
     receipt["User_Input"] = userInput
     receipt["Transaction_Hash"] = hexlify(tx_receipt.transactionHash).decode("utf-8")
@@ -172,7 +173,7 @@ def reconstruct_receipt(tx_receipt, time, userInput, sender):
 
 
 # This function will take the reconstructed transaction receipt and perform pretty print for user friendly display of the transacition detail.
-def transaction_message(_receipt, _time, _input, _transact, _kVal):
+def transaction_message(_receipt, _time, _elapse, _input, _transact, _kVal):
     print("Transaction receipt:")
     pp.pprint(_receipt, sort_dicts=False)
     # The false sort_dict flag ensures that the order of the reconstructed receipt isn't sorted in alphabetical order.
@@ -181,7 +182,8 @@ def transaction_message(_receipt, _time, _input, _transact, _kVal):
     print("\nMAKE SURE YOU SAVE THE TRANSACTION HASH AND THE KECCAK256 VALUES OF YOUR SUBMISSIONS FOR FUTURE REFERENCE OF THE TIMESTAMPS")
     print("\nWITHOUT THE TRANSACTION HASH, YOU WILL NOT BE ABLE TO FIND THE TIMESTAMP IN THE FUTURE")
     print("\nTHE KECCAK256 VALUES ARE YOUR SUBMISSIONS HASHED AGAIN BY SOLIDITY KECCAK AND IT WILL BE SHOWN ON THE LOG PAGE OF YOUR NODE PROVIDER")
-    print("\n\nTime of transaction confirmed:", _time)
+    print("\n\nThis Transactin Took {} Seconds to be confirmed by the block".format(_elapse) )
+    print("\nTime of transaction confirmed:", _time)
     print("\nYou have submitted:\n")
     pp.pprint(_input)
     print("\nKeccak256 values of your submissions (in order):\n")
@@ -197,13 +199,17 @@ def process_single():
     outcome = single_input()    
     if outcome == 0:
         status = 0
-    else:    
+    else:
+        time_before = datetime.now()    
         transact = interact(outcome)
         time_get = datetime.now()
-        receipt_dict = reconstruct_receipt(transact, time_get, outcome, owner_account)
+        elapse_time = (time_get - time_before).total_seconds()
+        # Obtains the time required for the transaction to be confirmed by the block
+
+        receipt_dict = reconstruct_receipt(transact, time_get, elapse_time, outcome, owner_account)
         #print("Full transaction receipt:\n". transact)         #to see unfiltered and complete block transaction receipt, uncomment this line
         keccak_value = Convert_to_keccak(outcome)
-        transaction_message(receipt_dict, time_get, outcome, transact, keccak_value)
+        transaction_message(receipt_dict, time_get, elapse_time, outcome, transact, keccak_value)
         getpass.getpass("\n\n\nPress Enter to continue...")
         write_to_file(receipt_dict)
         # writes useful informaiton of the transaction to a local log file for future reference
@@ -218,12 +224,14 @@ def process_batch():
     elif outcome == 0:
         status = 0
     else:
+        time_before = datetime.now()
         transact = interact(outcome, True)
         time_get = datetime.now()
-        receipt_dict = reconstruct_receipt(transact, time_get, outcome, owner_account)
+        elapse_time = (time_get - time_before).total_seconds()
+        receipt_dict = reconstruct_receipt(transact, time_get, elapse_time, outcome, owner_account)
         #print("Full transaction receipt:\n". transact)         #to see raw unfiltered block transaction receipt, uncomment this line.
         keccak_value = Convert_to_keccak(outcome, True)
-        transaction_message(receipt_dict, time_get, outcome, transact, keccak_value)
+        transaction_message(receipt_dict, time_get, elapse_time, outcome, transact, keccak_value)
         getpass.getpass("\n\n\nPress Enter to continue...")
         write_to_file(receipt_dict)
         status = 1
@@ -236,7 +244,7 @@ def welcome():
     
 
 
-# This function is the main function to be called to initial the CLI, it calls functions defined above depending on the user input.
+# This function is the main function to be called to initialise the CLI, it calls functions defined above depending on the user input.
 def terminal():
     while(True):
         os.system("clear")
@@ -244,7 +252,7 @@ def terminal():
         print("\n\nConnecting to the Local Ethereum node.......\n\n")
         
         if connection_status() == True:
-            print("Successfully connected to...\n")
+            print("Successfully connected to Ganache\n")
 
         else:
             print("Connection cannot be established, check the following:\n")
@@ -258,7 +266,7 @@ def terminal():
         print("2. Press 2 for batch timestamp\n")
         print("Enter exit to terminate program\n")
         while(True):
-            userIn = input("Input >>>")
+            userIn = input("Input >>> ")
             if userIn == "exit":
                 os.system("clear")
                 sys.exit()
