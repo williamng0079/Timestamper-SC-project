@@ -47,6 +47,10 @@ MetaMask
     Such wallet address will be linked to the Ropsten ethereum testnet and test ether will be obtained from https://faucet.dimensions.network/.
     This is setup for later deployment tests.
 
+    - npm install @truffle/hdwallet-provider
+
+
+
 Node.Js and npm package manager (server side JavaScript platform that allows the creation of applications to interact with the ethereum nodes)
 
     we will use curl to install the node.js package manager 
@@ -345,6 +349,17 @@ Test data generation:
         Common question asked regarding the orderding of transactions:
         Order transactions within each block will be decided by the winning miner of block generation even if a smart contract is being called simultaneously
         (Source: https://ethereum.stackexchange.com/questions/2856/what-happens-when-a-smart-contract-gets-several-similar-calls-in-the-same-block)
+
+Ropsten Delployment with infura node provider Test:
+    
+    
+    initialise hdwallet for truffle
+    - npm install @truffle/hdwallet-provider
+    - MetaMask account set up, and fund ropsten test eth through ropsten faucets
+    - Obtain the mnemonic from metamask and put into the truffle-config.js file
+    - register infura to obtain a project id 
+    - https://ropsten.infura.io/v3/bc3734d38ca046b2bb6091743cd03a4f
+
 
 
 
