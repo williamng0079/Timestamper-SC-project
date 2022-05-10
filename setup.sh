@@ -7,7 +7,7 @@
 sudo apt-get update
 sudo apt install curl
 
-## Download the lastest stable version of node js (v16.x) and use npm to install truffle and the required packages
+## Download the lastest stable version of node js (v16.x) (nodejs, n.d.) and use npm to install truffle and the required packages
 ## The hdwallet provider module is required for contract deployment and interaction to the public ropsten testnet
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
