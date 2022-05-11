@@ -73,7 +73,8 @@ Summary
 > Final cost:          0.002191872520539248 ETH
 
 
-A successful smart contract call log (input = 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e)
+A successful smart contract call log: 
+(input = 4f62f6b61e16daa0005c45211abb11a3fd0b8e70cc7f4a1ed1f91cc22a95f78e)
 {
   tx: '0x944812f07b6bd65daef7833420a6c52e2af94f30a5e0fa43e295420e9aaa3f85',
   receipt: {

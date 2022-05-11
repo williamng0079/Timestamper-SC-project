@@ -137,7 +137,7 @@ if __name__ == "__main__":
             
         print("Use data_analyser.py to obtain the average value and graph of the data ")
         
-        for i in range (300):                       # Modify the number in range to change the test parameter
+        for i in range (500):                       # Modify the number in range to change the test parameter
 
             mp.Process(target = delay_test_case_2).start()
             # The loop will generate process instances continuously and have them executing in parallel untill the number of processes is equal to the range set above.

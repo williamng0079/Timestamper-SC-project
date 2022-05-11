@@ -20,14 +20,15 @@ contract Timestamper is Ownable
                                                         //"indexed" flag allows the respective arguments to be displayed in log (Solidity, n.d.). 
     
     //Memory and calldata define the data area where a variable is stored. 
-    //It is used to temporarily store variables and their values (Fontaine, 2019).
+    //It is used to temporarily store variables and their values (Solidity, n.d.).
     //calldata method is choosen choosen due to lower gas usage after testing both options.
     function timestamp(string calldata hash) public onlyOwner       
     {
         //_hash = hash;                                             
         //console.log("Timestamping:", hash);                       
                     
-        emit Timestamp(hash);                           //This allows the argument (supplied hash input) event indexed to be logged in the transaction's input field (Solidity, n.d.).      
+        emit Timestamp(hash);                           
+        //This allows the argument (supplied hash input) event indexed to be logged in the transaction's input field (Solidity, n.d.).      
         
     }
     

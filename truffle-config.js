@@ -22,7 +22,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
 // const fs = require('fs');
 const mnemonic = "steel tiny wreck avocado scrub valid entry excuse enable expect steel cotton";
-//  This 12 words mnemonic phrase generates the the test metamask account (contains 2.3 test eth for ropsten) used for the ropsten testnet
+//  This 12 words mnemonic phrase generates that the test metamask account (contains 2.2 test eth received from faucets) used for the ropsten testnet
 //  In the real world scenario, this needs to be kept secret at all cost.
 
 module.exports = {

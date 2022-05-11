@@ -69,10 +69,10 @@ def plot_time_delay(continuous=False):
         # This is done to ensure that the first x value starts at 1 rather than 0 as time delay value generated with 0 request does not make sense.    
 
         avg = calculate_avg(dataset)
-        plt.plot(x_value,dataset, label="Average time delay = {}".format(avg))
+        plt.plot(x_value,dataset, label="Average time delay = {}s".format(avg))
         # This line will display the calculated average value of the list onto the legend label of the graph.
 
-        plt.ylabel("Time Delay of Continuous in Seconds")
+        plt.ylabel("Time Delay of Continuous requests in Seconds")
         plt.xlabel("Number of Requests")
         plt.title("Continuous Requests (w/0.3s interval between requests)")
         plt.legend()

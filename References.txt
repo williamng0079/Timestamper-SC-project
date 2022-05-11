@@ -1,7 +1,7 @@
 A numbered list of references for in text citations within the comments of codes.
 
-1.  SPDX. (2018) MIT License. [online] Available from: https://spdx.org/licenses/MIT.html. (Accessed: 15 April 2022)
-2.  Truffle. (n.d.) Running Migrations. [online] Available from: https://trufflesuite.com/docs/truffle/getting-started/running-migrations/. (Accessed 15 April 2022)
+1.  SPDX. (2018) MIT License. [online] Available from: https://spdx.org/licenses/MIT.html. (Accessed 01 May 2022)
+2.  Truffle. (n.d.) Running Migrations. [online] Available from: https://trufflesuite.com/docs/truffle/getting-started/running-migrations/. (Accessed 02 May 2022)
 3.  Solidity. (n.d.) Layout of a Solidity Source File. [online] Available from: https://docs.soliditylang.org/en/v0.8.13/layout-of-source-files.html#version-pragma. (Accessed 15 April 2022)
 4.  Solidity. (n.d.) Contracts. [online] Available from: https://docs.soliditylang.org/en/v0.4.24/contracts.html. (Accessed: 16 April 2022)
 5.  Solidity. (n.d.) Events. [online] Available from: https://docs.soliditylang.org/en/v0.4.24/contracts.html#events. (Accessed 16 April 2022)
