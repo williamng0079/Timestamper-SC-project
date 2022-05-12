@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 // The MIT license declared (SPDX, 2018) specifies the following: 
-// "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+// "Permission is hereby granted, free of charge, 
+// to any person obtaining a copy of this software and associated documentation files (the "Software"), 
 // to deal in the Software without restriction."
 
 
